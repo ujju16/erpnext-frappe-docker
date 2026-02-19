@@ -118,7 +118,7 @@ services:
       - sites:/home/frappe/frappe-bench/sites
     ports:
       - "8080:8080"
-  
+
   queue-long:
     image: frappe/erpnext:v15.96.0
     networks:

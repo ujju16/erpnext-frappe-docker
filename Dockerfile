@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 USER frappe
 WORKDIR /home/frappe/frappe-bench
 
-# On copy ton apps.json depuis la racine de ton dépôt GitHub 
+# On copy ton apps.json depuis la racine de ton dépôt GitHub
 # (ton dossier local frappe-docker) vers l'intérieur de l'image
 COPY --chown=frappe:frappe apps.json apps.json
 
