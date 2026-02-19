@@ -1,7 +1,7 @@
 # Étape 1 : Image de base officielle et stable
 FROM frappe/erpnext:v15.96.0
 
-# Métadonnées pour le registre (Cyber-hygiène)
+# Métadonnées pour le registry (Cyber-hygiène)
 LABEL org.opencontainers.image.source="https://github.com/ujju16/erpnext-frappe-docker"
 LABEL org.opencontainers.image.description="Image ERPNext personnalisée avec déploiement CI/CD"
 LABEL org.opencontainers.image.licenses=MIT
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 USER frappe
 WORKDIR /home/frappe/frappe-bench
 
-# On copie ton apps.json depuis la racine de ton dépôt GitHub 
+# On copy ton apps.json depuis la racine de ton dépôt GitHub 
 # (ton dossier local frappe-docker) vers l'intérieur de l'image
 COPY --chown=frappe:frappe apps.json apps.json
 

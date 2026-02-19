@@ -12,10 +12,10 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: "3306"
-      MYSQL_ROOT_PASSWORD: u0j9j1u2 # Aligné
+      MYSQL_ROOT_PASSWORD: u0j9j1u2
       MARIADB_ROOT_PASSWORD: u0j9j1u2
 
-  watchtower: # Sorti du bloc backend, bien indenté
+  watchtower:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -85,8 +85,9 @@ services:
     networks:
       - frappe_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--password=u0j9j1u2"]
-      interval: 5s
+      test: ["CMD-SHELL", "mysqladmin ping -u root -p$${MARIADB_ROOT_PASSWORD}"]
+      interval: 10s # Un peu plus souple que 5s pour laisser le CPU respirer
+      timeout: 5s
       retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: u0j9j1u2
@@ -110,8 +111,8 @@ services:
       - nginx-entrypoint.sh
     environment:
       BACKEND: backend:8000
-      FRAPPE_SITE_NAME_HEADER: frontend
       SOCKETIO: websocket:9000
+      FRAPPE_SITE_NAME_HEADER: erp.fluxelectrique.com
       UPSTREAM_REAL_IP_ADDRESS: 127.0.0.1
     volumes:
       - sites:/home/frappe/frappe-bench/sites
