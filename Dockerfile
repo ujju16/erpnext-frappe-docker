@@ -6,23 +6,18 @@ LABEL org.opencontainers.image.source="https://github.com/ujju16/erpnext-frappe-
 LABEL org.opencontainers.image.description="Image ERPNext personnalisée avec déploiement CI/CD"
 LABEL org.opencontainers.image.licenses=MIT
 
+# On passe en root pour ajuster le système si besoin
 USER root
-
-# Installation des dépendances système minimales (si besoin de compiler certains packages)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+    curl git && rm -rf /var/lib/apt/lists/*
 
-# Retour à l'utilisateur frappe pour la sécurité (Principe du moindre privilège)
+# IMPORTANT : On se place là où Bench est configuré dans l'image
 USER frappe
-
-# On définit le répertoire de travail officiel
 WORKDIR /home/frappe/frappe-bench
 
-# Copie sécurisée du fichier de configuration des apps
+# On copie ton apps.json depuis la racine de ton dépôt GitHub 
+# (ton dossier local frappe-docker) vers l'intérieur de l'image
 COPY --chown=frappe:frappe apps.json apps.json
 
-RUN bench get-app --branch version-15 erpnext && \
-    find apps -name "*.pyc" -delete && \
-    find apps -name "__pycache__" -delete
+# On installe ERPNext (bench est déjà dans le PATH de l'image)
+RUN bench get-app --branch version-15 erpnext
