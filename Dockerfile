@@ -19,6 +19,9 @@ WORKDIR /home/frappe/frappe-bench
 # (ton dossier local frappe-docker) vers l'intérieur de l'image
 COPY --chown=frappe:frappe apps.json apps.json
 
-# On installe ERPNext (bench est déjà dans le PATH de l'image)
-# On utilise l'URL complète pour éviter le bug de l'objet 'App' sans attribut 'org'
-RUN bench get-app --branch version-15 https://github.com/frappe/erpnext.git
+# On force la mise à jour des dépendances Python au cas où
+RUN ./env/bin/pip install -e apps/frappe -e apps/erpnext
+
+# Nettoyage
+RUN find apps -name "*.pyc" -delete && \
+    find apps -name "__pycache__" -delete
