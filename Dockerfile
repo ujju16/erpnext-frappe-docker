@@ -23,12 +23,6 @@ WORKDIR /home/frappe/frappe-bench
 # Copie sécurisée du fichier de configuration des apps
 COPY --chown=frappe:frappe apps.json apps.json
 
-# --- LE CŒUR DU BUILD ---
-# On utilise une seule couche (LAYER) pour installer et nettoyer
-# Cela évite de faire gonfler l'image inutilement
 RUN bench get-app --branch version-15 erpnext && \
-    bench install-app erpnext
-# Vérification de l'intégrité (Optionnel mais pro)
-RUN bench version
-
-# L'image est déjà configurée pour exposer les ports nécessaires via la base	
+    find apps -name "*.pyc" -delete && \
+    find apps -name "__pycache__" -delete
