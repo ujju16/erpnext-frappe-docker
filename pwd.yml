@@ -14,6 +14,12 @@ services:
       DB_PORT: "3306"
       MYSQL_ROOT_PASSWORD: u0j9j1u2 
       MARIADB_ROOT_PASSWORD: u0j9j1u2
+    watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/config.json # Pour que Watchtower puisse s'authentifier à GHCR
+    command: --interval 300 --cleanup # Vérifie toutes les 5 minutes
 
   configurator:
     image: frappe/erpnext:v15.96.0
