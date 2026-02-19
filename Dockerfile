@@ -20,4 +20,5 @@ WORKDIR /home/frappe/frappe-bench
 COPY --chown=frappe:frappe apps.json apps.json
 
 # On installe ERPNext (bench est déjà dans le PATH de l'image)
-RUN bench get-app --branch version-15 erpnext
+# On utilise l'URL complète pour éviter le bug de l'objet 'App' sans attribut 'org'
+RUN bench get-app --branch version-15 https://github.com/frappe/erpnext.git
