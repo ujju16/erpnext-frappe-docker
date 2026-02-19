@@ -1,0 +1,10 @@
+[
+  {
+    "name": "frappe",
+    "branch": "version-15"
+  },
+  {
+    "name": "erpnext",
+    "branch": "version-15"
+  }
+]
