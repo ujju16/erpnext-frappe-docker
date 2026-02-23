@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/ujju16/erpnext-frappe-docker:latest # Ton image perso
+    image: ghcr.io/ujju16/erpnext-frappe-docker:latest
     networks:
       - frappe_network
     deploy:
@@ -19,7 +19,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/fluxadmin/.docker/config.json:/config.json # Chemin absolu plus sûr
+      - /home/fluxadmin/.docker/config.json:/config.json
     command: --interval 300 --cleanup --debug
     restart: always
 
@@ -70,15 +70,14 @@ services:
         wait-for-it -t 120 db:3306;
         wait-for-it -t 120 redis-cache:6379;
         wait-for-it -t 120 redis-queue:6379;
-        export start=`date +%s`;
         until [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".db_host // empty"` ]] && \
-          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && \
-          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
+              [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && \
+              [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
         do
           echo "Waiting for config...";
           sleep 5;
         done;
-        bench new-site --mariadb-user-host-login-scope='%' --admin-password=admin --db-root-username=root --db-root-password=u0j9j1u2 --install-app erpnext --set-default frontend;
+        bench new-site --mariadb-user-host-login-scope='%' --admin-password=admin --db-root-username=root --db-root-password=u0j9j1u2 --install-app erpnext --set-default erp.fluxelectrique.com;
 
   db:
     image: mariadb:10.6
@@ -86,7 +85,7 @@ services:
       - frappe_network
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -u root -p$${MARIADB_ROOT_PASSWORD}"]
-      interval: 10s # Un peu plus souple que 5s pour laisser le CPU respirer
+      interval: 10s
       timeout: 5s
       retries: 5
     environment:
@@ -113,14 +112,14 @@ services:
       BACKEND: backend:8000
       SOCKETIO: websocket:9000
       FRAPPE_SITE_NAME_HEADER: erp.fluxelectrique.com
-      UPSTREAM_REAL_IP_ADDRESS: 127.0.0.1
+      UPSTREAM_REAL_IP_ADDRESS: 10.0.0.10
     volumes:
       - sites:/home/frappe/frappe-bench/sites
     ports:
       - "8080:8080"
 
   queue-long:
-    image: frappe/erpnext:v15.96.0
+    image: ghcr.io/ujju16/erpnext-frappe-docker:latest
     networks:
       - frappe_network
     deploy:
@@ -139,7 +138,7 @@ services:
       FRAPPE_REDIS_QUEUE: redis://redis-queue:6379
 
   queue-short:
-    image: frappe/erpnext:v15.96.0
+    image: ghcr.io/ujju16/erpnext-frappe-docker:latest
     networks:
       - frappe_network
     deploy:
@@ -176,7 +175,7 @@ services:
         condition: on-failure
 
   scheduler:
-    image: frappe/erpnext:v15.96.0
+    image: ghcr.io/ujju16/erpnext-frappe-docker:latest
     networks:
       - frappe_network
     deploy:
@@ -190,7 +189,7 @@ services:
       - logs:/home/frappe/frappe-bench/logs
 
   websocket:
-    image: frappe/erpnext:v15.96.0
+    image: ghcr.io/ujju16/erpnext-frappe-docker:latest
     networks:
       - frappe_network
     deploy:
