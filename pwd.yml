@@ -20,7 +20,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/fluxadmin/.docker/config.json:/config.json
-    command: --interval 300 --cleanup --debug
+    command: --interval 300 --cleanup --debug --label-enable
     restart: always
 
   configurator:
